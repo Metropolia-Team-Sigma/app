@@ -1,2 +1,2 @@
-# app
-Sigma desktop app
+# client
+Sigma desktop client
