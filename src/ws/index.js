@@ -1,7 +1,7 @@
 const io = require('socket.io-client')
 const events = require('./events')
 
-module.exports = (wsUrl, room) => {
+module.exports = async (wsUrl, room) => {
   global.log.debug(`Connecting to backend ${wsUrl}...`)
 
   const socket = io(wsUrl)
