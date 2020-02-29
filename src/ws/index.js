@@ -14,4 +14,6 @@ module.exports = async (wsUrl, room) => {
     const handler = events[event]
     socket.on(event, eventParams => handler({ eventParams, ...globalState }))
   }
+
+  return socket
 }

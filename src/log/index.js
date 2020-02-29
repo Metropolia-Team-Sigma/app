@@ -1,16 +1,6 @@
 const winston = require('winston')
 const path = require('path')
 
-const generatePrefix = info => {
-  let prefix
-
-  if (info.user) prefix = `[${info.socket}]`
-  else prefix = '[Sigma]'
-
-  // Colorise system messages to blue
-  return `${prefix.green.bold} ${info.user ? info.message : info.message.cyan}`
-}
-
 const devLogPath = path.join(__dirname, 'debug.log')
 const prodLogPath = path.join(process.execPath, 'debug.log')
 const isProduction = process.pkg
@@ -25,6 +15,16 @@ const debugLogger = winston.createLogger({
     new winston.transports.File({ filename: isProduction ? prodLogPath : devLogPath })
   ]
 })
+
+const generatePrefix = info => {
+  let prefix
+
+  if (info.id && info.timestamp) prefix = `[${info.timestamp}] ${info.id.magenta}:`
+  else prefix = '[Sigma]'
+
+  // Colorise system messages to blue
+  return `${prefix.green.bold} ${info.id && info.timestamp ? info.message : info.message.cyan}`
+}
 
 const chatLogger = winston.createLogger({
   level: 'info',
