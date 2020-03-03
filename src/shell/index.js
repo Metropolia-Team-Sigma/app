@@ -1,28 +1,20 @@
-const readline = require('readline')
-const { Writable } = require('stream')
+const readline = require('serverline')
 const commands = require('./commands')
 const { encryptMessage } = require('../crypto')
 const formatMessageTimestamp = require('../utils/formatMessageTimestamp')
 
-// FIXME: Stdout does sometimes not get muted
-// Minor hack to prevent unnecessary output from making it to stdout (Like messages being sent)
-const stdout = new Writable({
-  write: (chunk, encoding, callback) => {
-    if (!this.muted) {
-      process.stdout.write(chunk, encoding)
-      callback()
-    }
-  }
-})
+module.exports = socket => {
+  const timestamp = `[${formatMessageTimestamp(new Date())}]`.bold.green
+  const author = 'You: '.bold.magenta
 
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: stdout
-})
+  readline.init()
 
-module.exports = function waitForCommand (socket) {
-  rl.question('', input => {
-    if (input.startsWith('/')) {
+  // Using explicit setPrompt because passing the prompt to init() will lead to unexpected results from getPrompt()
+  readline.setPrompt(`${timestamp} ${author}`)
+
+  // Handle command/message sending
+  readline.on('line', input => {
+    if (input.startsWith('/')) { // Handle as command to execute
       // Split input into command (Without leading slash) and arguments thereof
       const elements = input.split(' ')
       const command = elements.splice(0, 1)[0].replace('/', '')
@@ -30,13 +22,20 @@ module.exports = function waitForCommand (socket) {
 
       if (commands[command]) commands[command](args, socket)
       else global.chatLog.warn(`Command "${command}" does not exist!`.yellow)
-    } else {
-      // Re-log message locally
-      global.chatLog.info(input, { id: socket.id, timestamp: formatMessageTimestamp(new Date()) })
+    } else { // Handle as message to send
       socket.send({ content: encryptMessage(input), id: socket.id })
     }
+  })
 
-    // Wait for next command
-    waitForCommand(socket)
+  // Handle Ctrl-C
+  readline.on('SIGINT', rl => {
+    const prompt = '[Sigma]'.bold.green
+    const question = 'Leave chat room? (y/n) '.bold.yellow
+
+    rl.question(`${prompt} ${question}`, answer =>
+      answer.match(/^y(es)?$/i)
+        ? process.exit(0)
+        : rl.output.write(readline.getPrompt())
+    )
   })
 }

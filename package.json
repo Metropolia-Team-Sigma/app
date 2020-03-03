@@ -4,7 +4,7 @@
   "description": "Sigma desktop client",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "cross-env NODE_ENV=debug node index.js",
     "start-dev": "cross-env NODE_ENV=debug nodemon index.js",
     "test": "eslint ."
   },
@@ -21,6 +21,7 @@
   "dependencies": {
     "colors": "^1.4.0",
     "require-directory": "^2.1.1",
+    "serverline": "^1.4.2",
     "socket.io-client": "^2.3.0",
     "winston": "^3.2.1"
   },
