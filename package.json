@@ -20,9 +20,12 @@
   "homepage": "https://github.com/Metropolia-Team-Sigma/client#readme",
   "dependencies": {
     "colors": "^1.4.0",
+    "defaults": "^1.0.3",
+    "node-machine-id": "^1.1.12",
     "require-directory": "^2.1.1",
     "serverline": "^1.4.2",
     "socket.io-client": "^2.3.0",
+    "superagent": "^5.2.2",
     "winston": "^3.2.1"
   },
   "devDependencies": {

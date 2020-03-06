@@ -19,7 +19,7 @@ const debugLogger = winston.createLogger({
 const generatePrefix = info => {
   let prefix
 
-  if (info.id && info.timestamp) prefix = `[${info.timestamp}] ${info.id.magenta}:`
+  if ((info.id || info.name) && info.timestamp) prefix = `[${info.timestamp}] ${info.name ? info.name.magenta : info.id.magenta}:`
   else prefix = '[Sigma]'
 
   // Colorise system messages to blue
