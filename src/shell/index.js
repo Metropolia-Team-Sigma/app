@@ -14,17 +14,9 @@ let state = {
 function start () {
   readline.init()
 
-  // Update prompt every 1000 ms (Account for time changes)
-  // TODO: Improve reliability
-  setInterval(() => {
-    if (state.socket) {
-      const timestamp = `[${formatMessageTimestamp(new Date())}]`.bold.green
-      const author = 'You: '.bold.magenta
-      readline.setPrompt(`${timestamp} ${author}`)
-    } else {
-      readline.setPrompt('> ')
-    }
-  }, 1000)
+  const timestamp = `[${formatMessageTimestamp(new Date())}]`.bold.green
+  const author = 'You: '.bold.magenta
+  readline.setPrompt(`${timestamp} ${author}`)
 
   // Handle command/message sending
   readline.on('line', input => {
